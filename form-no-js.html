@@ -14,9 +14,10 @@
           type="text"
           id="name"
           name="name"
+          pattern="[a-zA-Z ]+"
+          title="Only letters and spaces allowed."
           required
-          minlength="3"
-          maxlength="40"
+          maxlength="100"
         />
       </div>
 
@@ -39,8 +40,10 @@
           type="text"
           id="linkedin"
           name="linkedin"
-          pattern=".*linkedin.com/.*"
+          pattern="^.*linkedin\.com/in/.*$"
+          title="Put in a proper linkedin!"
           minlength="14"
+          required
         />
       </div>
 
@@ -53,7 +56,7 @@
           cols="50"
           placeholder="Leave a message for Ada..."
           required
-          minlength="15"
+          minlength="1"
           maxlength="2000"
         ></textarea>
       </div>
