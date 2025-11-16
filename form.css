@@ -37,8 +37,7 @@ input[type="submit"] {
   border-radius: 8px;
 }
 
-input:invalid:not(:placeholder-shown),
-textarea:invalid:not(:placeholder-shown) {
+.invalid {
   border: 1px solid red;
   color: red;
 }
