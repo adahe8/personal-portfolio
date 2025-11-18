@@ -1,5 +1,26 @@
 @import url(vars.css);
 
+/** opt into view transition */
+@view-transition {
+  navigation: auto;
+}
+
+/** define custom animations with at rule keyframes */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+::view-transition-old(root) {
+  animation: none;
+}
+::view-transition-new(root) {
+  animation: fadeIn 1s ease-in forwards;
+}
+
 /** uploading custom font */
 @font-face {
   font-family: "KoPub Batang";
