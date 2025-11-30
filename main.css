@@ -146,9 +146,6 @@ main img {
     align-items: center;
     row-gap: var(--spacing-size);
   }
-  project-card {
-    width: 80%;
-  }
 }
 @media screen and (min-width: 768px) {
   .imgfirst-section {
@@ -173,9 +170,6 @@ main img {
     row-gap: var(--spacing-size);
     justify-content: center;
     align-items: center;
-  }
-  project-card {
-    width: var(--project-card-width);
   }
 }
 
@@ -246,7 +240,7 @@ project-card {
   flex-direction: column;
   justify-content: space-between;
   aspect-ratio: var(--card-ratio);
-  min-width: var(--home-img-min-width);
+  width: var(--project-card-width);
   a {
     height: var(--project-label-height);
     align-content: center;
