@@ -73,14 +73,15 @@ fetch('/projectdata.json')
         span.textContent = item;
         marqueeSection.appendChild(span);
       });
+      const button = dialog.querySelector('#todeployment');
       if (project.deployment != "") {
-        dialog.querySelector('button').textContent = "View Project!";
-        dialog.querySelector('button').addEventListener('click', () => {
+        button.textContent = "View Project!";
+        button.addEventListener('click', () => {
           window.open(project.deployment, '_blank');
         });
       } else {
-        dialog.querySelector('button').style.backgroundColor = "var(--background)";
-        dialog.querySelector('button').textContent = "Not yet deployed";
+        button.style.backgroundColor = "var(--background)";
+        button.textContent = "Not yet deployed";
       }
       if (project.articleHeader != "") {
         dialog.querySelector('article h3').textContent = project.articleHeader;
@@ -96,12 +97,10 @@ fetch('/projectdata.json')
 
       dialog.showModal();
 
-      overlay.addEventListener('click', (e) => {
-        if (e.target === overlay){
-          dialog.close();
-        }
+      dialog.querySelector('#close').addEventListener('click', () => {
+        dialog.close();
       });
-
+      
       dialog.addEventListener('close', function() {
         overlay.remove();
       });

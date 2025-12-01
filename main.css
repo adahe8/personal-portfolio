@@ -306,6 +306,9 @@ subject-tag {
 }
 
 /** dialog styling */
+body:has(dialog[open]) {
+  overflow:hidden;
+}
 dialog-overlay {
   position: fixed;
   top: 0;
@@ -316,8 +319,8 @@ dialog-overlay {
   z-index: 1;
 }
 dialog {
-  position: absolute;
-  overflow: scroll;
+  overflow-y: scroll;
+  overflow-x: hidden;
   margin-top: 5%;
   margin-bottom: 15%;
   display: flex;
@@ -340,6 +343,12 @@ dialog {
     width:fit-content;
   }
 }
+#close {
+  margin: var(--spacing-size);
+  margin-left: auto;
+  margin-bottom: 0;
+  padding: var(--tag-padding) var(--spacing-size);
+}
 dialog article {
   padding: 0 var(--spacing-size) var(--spacing-size) var(--spacing-size);
 }
@@ -355,21 +364,23 @@ marquee-container {
   }
   #marquee-holder {
     flex: 1;
-    width: 100%;
     overflow: hidden;
     padding: var(--spacing-size);
     background-color: var(--end-blue);
   }
 }
 #marquee-content {
-  width: 100%;
-  display: inline-block;
+  width: max-content;
+  min-width: var(--project-card-width);
+  display: flex;
+  flex-direction: row;
+  column-gap: var(--gutter-size);
   animation: scroll-left 15s linear infinite;
 }
 
 @keyframes scroll-left {
   0% {
-    transform: translate(40%,0);
+    transform: translate(100%,0);
   }
   100% {
     transform: translate(-100%,0);

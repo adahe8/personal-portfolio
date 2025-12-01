@@ -45,6 +45,7 @@
       </section>
     </header>
     <main id="projects-main">
+      <noscript> Enable JavaScript to view in depth project descriptions and their deployment statuses! </noscript>
       <project-card data-project-name="asteria">
         <div class="projectdisplay">
           <subject-tag class="ai">ai</subject-tag>
@@ -128,6 +129,7 @@
       <template>
         <dialog-overlay>
           <dialog closedby="any">
+            <button id="close">x</button>
             <section>
               <h2></h2>
               <h3></h3> 
@@ -138,10 +140,9 @@
                 </div>
               </marquee-container>
             </section>
-            <button></button>
+            <button id="todeployment"></button>
             <article>
               <h3></h3>
-              <content></content>
             </article>
           </dialog>
         </dialog-overlay>
