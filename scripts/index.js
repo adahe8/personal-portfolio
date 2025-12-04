@@ -1,6 +1,3 @@
-import "./components/projectCard.js";
-import "./loadProjects.js";
-
 const btn = document.querySelector(".toggle");
 const prefersDarkScheme = window.matchMedia("(prefers-color-scheme: dark)");
 const label = document.getElementById("theme-label");

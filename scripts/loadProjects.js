@@ -5,20 +5,22 @@ const projectGallery = document.getElementById("projects-gallery");
 const localButton = document.getElementById("local");
 if (localStorage.length === 1) {
     console.log("Projects data is not in local storage: if there is network, JSON data will populate it.");
-    try {
-        const response = await fetch(url);
-        if (!response.ok) {
-            throw new Error(`Response status: ${response.status}`);
+    async () => {
+        try {
+            const response = await fetch(url);
+            if (!response.ok) {
+                throw new Error(`Response status: ${response.status}`);
+            }
+            let jsonData = await response.json();
+            let objects = jsonData.record;
+            Object.keys(objects).forEach(key => {
+                console.log(key);
+                localStorage.setItem(key, JSON.stringify(objects[key]));
+            });
+        }catch (error) {
+            console.error(error.message);
+            projectGallery.innerHTML = "No network, and no data to fetch from local storage. Projects cannot be shown.";
         }
-        let jsonData = await response.json();
-        let objects = jsonData.record;
-        Object.keys(objects).forEach(key => {
-            console.log(key);
-            localStorage.setItem(key, JSON.stringify(objects[key]));
-        });
-    }catch (error) {
-        console.error(error.message);
-        projectGallery.innerHTML = "No network, and no data to fetch from local storage. Projects cannot be shown.";
     }
 }
 
