@@ -1,9 +1,11 @@
+import {enableEditMode} from "./editProjects.js";
+
 const url = `https://api.jsonbin.io/v3/b/69314eb743b1c97be9d70dd3`;
 
 const projectGallery = document.getElementById("projects-gallery");
 // load from local
 const localButton = document.getElementById("local");
-if (localStorage.length === 1) {
+if (!localStorage.getItem("visited")) {
     console.log("Projects data is not in local storage: if there is network, JSON data will populate it.");
     async () => {
         try {
@@ -22,13 +24,14 @@ if (localStorage.length === 1) {
             projectGallery.innerHTML = "No network, and no data to fetch from local storage. Projects cannot be shown.";
         }
     }
+    localStorage.setItem("visited", "true");
 }
 
 localButton.addEventListener("click", () => {
     // get everything from local storage as an object
     let projectData = {};
     Object.keys(localStorage).forEach(key => {
-        if (key === "theme"){
+        if (key === "theme" || key === "visited"){
             return;
         }
         console.log(key);
@@ -92,11 +95,13 @@ function populateDialog(projects) {
         const overlay = template.content.querySelector('dialog-overlay').cloneNode(true);
         document.body.appendChild(overlay);
 
-        const dialog = overlay.shadowRoot
-        ? overlay.shadowRoot.querySelector('dialog')
-        : overlay.querySelector('dialog');
+        const dialog = overlay.querySelector('dialog');
 
-
+        //set data attributes to track which project and its tags are showing: important for CRUD
+        dialog.setAttribute("data-project-id",card.dataset.id);
+        console.log();
+        dialog.setAttribute("data-tags",JSON.stringify(project.tags));
+        
         dialog.querySelector('h2').textContent = project.title;
         dialog.querySelector('h3').textContent = project.date;
         const marqueeSection = dialog.querySelector('#marquee-content');
@@ -110,8 +115,9 @@ function populateDialog(projects) {
         const button = dialog.querySelector('#todeployment');
         if (project.deployment != "") {
             button.textContent = "View Project!";
+            button.setAttribute("data-url",`${project.deployment}`);
             button.addEventListener('click', () => {
-            window.open(project.deployment, '_blank');
+                window.open(project.deployment, '_blank');
             });
         } else {
             button.style.backgroundColor = "var(--background)";
@@ -130,6 +136,7 @@ function populateDialog(projects) {
         });
 
         dialog.showModal();
+        enableEditMode(dialog);
 
         dialog.querySelector('#close').addEventListener('click', () => {
             dialog.close();
