@@ -1,4 +1,6 @@
-import {enableEditMode} from "./editProjects.js";
+import {createNewProject, enableEditMode} from "./editProjects.js";
+let projectcount = 0; //global scope var for assigning ids during create
+localStorage.setItem("projectcount", projectcount);
 
 const url = `https://api.jsonbin.io/v3/b/69314eb743b1c97be9d70dd3`;
 const projectGallery = document.querySelector("projects-gallery");
@@ -17,9 +19,11 @@ localButton.addEventListener("click", () => {
     // get everything from local storage as an object
     let projectData = {};
     Object.keys(localStorage).forEach(key => {
-        if (key === "theme" || key === "visited"){
+        if (key === "theme" || key === "visited" || key === "projectcount"){
             return;
         }
+        projectcount++;
+        localStorage.setItem("projectcount", projectcount);
         console.log(key);
         const project = localStorage.getItem(key);
         projectData[key] = JSON.parse(project);
@@ -33,6 +37,10 @@ localButton.addEventListener("click", () => {
 const reset = editorTools.querySelector("#reset");
 reset.addEventListener("click", () => {
     loadIntoLocal();
+});
+const createBtn = editorTools.querySelector("#create");
+createBtn.addEventListener("click", () => {
+    createNewProject();
 });
 
 
@@ -74,10 +82,17 @@ async function loadIntoLocal(){
 }
 
 function populateCardGallery(projects) {
+    if (!projects || typeof projects !== "object") {
+        console.error("populateCardGallery called with invalid projects:", projects);
+        return;
+    }
     currentProjects = projects;
     projectGallery.innerHTML = "";
     Object.keys(projects).forEach(key => {
         const project = projects[key];
+        if(!project) {
+            console.warn(`null project at ${key}`);
+        }
         const card = document.createElement("project-card");
         fillCard(card, project, key);
         projectGallery.appendChild(card);
@@ -157,7 +172,7 @@ projectGallery.addEventListener('click', e => {
         enableEditMode(dialog, card.dataset.coverType, card.dataset.srcs)
     });
 
-    dialog.querySelector('#close').addEventListener('click', () => {
+    dialog.querySelector('.close').addEventListener('click', () => {
         dialog.close();
     });
     
@@ -166,4 +181,4 @@ projectGallery.addEventListener('click', e => {
     });
 });
 
-export { fillDialogInfo, fillCard};
+export { currentProjects, projectGallery, fillDialogInfo, fillCard};

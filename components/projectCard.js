@@ -3,13 +3,15 @@ class ProjectCard extends HTMLElement {
 
     constructor(){
         super();
+        // want to put this component in shadow DOM in open mode, so it can be accessed and edited frequently
+        this.attachShadow({mode: "open"});
+        this._ready = false;
+        this._renderQueued = false;
     }
 
     connectedCallback(){
-        // want to put this component in shadow DOM in open mode, so it can be accessed and edited frequently
-        const shadow = this.attachShadow({mode: "open"});
-        this.render(shadow);
-
+        this.render();
+        this._ready = true;
     }
 
     disconnectedCallback(){
@@ -17,11 +19,18 @@ class ProjectCard extends HTMLElement {
     }
 
     attributeChangedCallback(name, oldValue, newValue){
-        this.render(this.shadowRoot);
+        if (!this._ready) return;
+        if (!this._renderQueued){
+            this._renderQueued = true;
+            queueMicrotask(() => {
+                this._renderQueued = false;
+                this.render()
+            })
+        }
     }
 
-    render(shadow) {
-        shadow.innerHTML = "";
+    render() {
+        this.shadowRoot.innerHTML = "";
         // setting up markup
         let display = document.createElement("div");
         display.setAttribute("class", "projectdisplay");
@@ -74,9 +83,6 @@ class ProjectCard extends HTMLElement {
                 }
             });
             display.appendChild(imgCover);
-        } else {
-            // error handling for me, the developer
-            console.log("You put in an invalid cover type to the cover-type attribute. It has to be either image or video.");
         }
 
         // referencing external stylesheet
@@ -85,17 +91,17 @@ class ProjectCard extends HTMLElement {
         linkStyle.setAttribute("href", "components/projectCard.css");
 
         // putting it all together
-        shadow.appendChild(linkStyle);
-        shadow.appendChild(display);
+        this.shadowRoot.appendChild(linkStyle);
+        this.shadowRoot.appendChild(display);
         const title = document.createElement("h3");
         title.textContent = projectName;
         if(this.hasAttribute("data-deploy-link")){
             const anchor = document.createElement("a");
             anchor.setAttribute("href", this.getAttribute("data-deploy-link"));
             anchor.appendChild(title);
-            shadow.appendChild(anchor);
+            this.shadowRoot.appendChild(anchor);
         } else {
-            shadow.appendChild(title);
+            this.shadowRoot.appendChild(title);
         }
     }
 
