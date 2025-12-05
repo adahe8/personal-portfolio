@@ -1,4 +1,6 @@
 class ProjectCard extends HTMLElement {
+    static observedAttributes = ["data-title","data-tags","data-deploy-link","data-cover-type","data-srcs"];
+
     constructor(){
         super();
     }
@@ -6,7 +8,20 @@ class ProjectCard extends HTMLElement {
     connectedCallback(){
         // want to put this component in shadow DOM in open mode, so it can be accessed and edited frequently
         const shadow = this.attachShadow({mode: "open"});
+        this.render(shadow);
 
+    }
+
+    disconnectedCallback(){
+        console.log(`${this.getAttribute("data-title")} was removed.`);
+    }
+
+    attributeChangedCallback(name, oldValue, newValue){
+        this.render(this.shadowRoot);
+    }
+
+    render(shadow) {
+        shadow.innerHTML = "";
         // setting up markup
         let display = document.createElement("div");
         display.setAttribute("class", "projectdisplay");
@@ -82,12 +97,9 @@ class ProjectCard extends HTMLElement {
         } else {
             shadow.appendChild(title);
         }
-
     }
 
-    disconnectedCallback(){
-        console.log(`${this.getAttribute("data-title")} was removed.`);
-    }
+
 }
 
 customElements.define("project-card", ProjectCard);

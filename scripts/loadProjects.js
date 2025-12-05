@@ -2,6 +2,7 @@ import {enableEditMode} from "./editProjects.js";
 
 const url = `https://api.jsonbin.io/v3/b/69314eb743b1c97be9d70dd3`;
 const projectGallery = document.querySelector("projects-gallery");
+let currentProjects = {};
 
 // load in projects from local
 const localButton = document.getElementById("local");
@@ -28,7 +29,6 @@ localButton.addEventListener("click", () => {
         editArea.appendChild(editorTools);
     }
     populateCardGallery(projectData);
-    populateDialog(projectData);
 });
 const reset = editorTools.querySelector("#reset");
 reset.addEventListener("click", () => {
@@ -37,9 +37,7 @@ reset.addEventListener("click", () => {
 
 
 // load from remote
-let projects = {};
 const remoteButton = document.getElementById("remote");
-
 remoteButton.addEventListener("click", async () => {
     try {
         const response = await fetch(url);
@@ -48,7 +46,6 @@ remoteButton.addEventListener("click", async () => {
         }
         const jsonData = await response.json();
         populateCardGallery(jsonData.record);
-        populateDialog(jsonData.record);
     } catch (error) {
         console.error(error.message);
     }
@@ -77,93 +74,96 @@ async function loadIntoLocal(){
 }
 
 function populateCardGallery(projects) {
+    currentProjects = projects;
     projectGallery.innerHTML = "";
     Object.keys(projects).forEach(key => {
         const project = projects[key];
         const card = document.createElement("project-card");
-        card.setAttribute("data-id", `${key}`);
-        card.setAttribute("data-title", `${project.title}`);
-        card.setAttribute("data-tags", JSON.stringify(project.tags));
-        if (project.deployment) {
-            card.setAttribute("data-deploy-link", `${project.deployment}`);
-        }
-        card.setAttribute("data-cover-type", `${project.coverType}`);
-        card.setAttribute("data-srcs", JSON.stringify(project.srcs));
+        fillCard(card, project, key);
         projectGallery.appendChild(card);
     });
-
+}
+function fillCard(card, project, key) {
+    card.setAttribute("data-id", `${key}`);
+    card.setAttribute("data-title", `${project.title}`);
+    card.setAttribute("data-tags", JSON.stringify(project.tags));
+    if (project.deployment) {
+        card.setAttribute("data-deploy-link", `${project.deployment}`);
+    }
+    card.setAttribute("data-cover-type", `${project.coverType}`);
+    card.setAttribute("data-srcs", JSON.stringify(project.srcs));
 }
 
-function populateDialog(projects) {
-    // populating the dialog box
-    // attempting the event bubblimg approach
-    projectGallery.addEventListener('click', e => {
-        const card = e.target.closest('project-card');
-        if (!card) return; // catch clicks only on project cards
+function fillDialogInfo(dialog, project){
+    //set data attributes to track the project, its tags, and its deployment: important for CRUD
+    dialog.setAttribute("data-tags",JSON.stringify(project.tags));
+    dialog.querySelector("#todeployment").setAttribute("data-url", project.deployment);
+    dialog.querySelector('h2').textContent = project.title;
+    dialog.querySelector('h3').textContent = project.date;
+    const marqueeSection = dialog.querySelector('#marquee-content');
+    marqueeSection.textContent = "";
 
-        //grab the project id
-        const project = projects[card.dataset.id];
-        if (!project) return;
-
-        //clone dialog into DOM, then plug in data
-        const template = document.getElementById("project-info");
-        const overlay = template.content.querySelector('dialog-overlay').cloneNode(true);
-        document.body.appendChild(overlay);
-
-        const dialog = overlay.querySelector('dialog');
-
-        //set data attributes to track the project, its tags, and its deployment: important for CRUD
-        dialog.setAttribute("data-project-id",card.dataset.id);
-        dialog.setAttribute("data-tags",JSON.stringify(project.tags));
-        dialog.querySelector("#todeployment").setAttribute("data-url", project.deployment);
-        dialog.querySelector('h2').textContent = project.title;
-        dialog.querySelector('h3').textContent = project.date;
-        const marqueeSection = dialog.querySelector('#marquee-content');
-        marqueeSection.textContent = "";
-
-        project.tools.forEach(item => {
-            const span = document.createElement('span');
-            span.textContent = item;
-            marqueeSection.appendChild(span);
+    project.tools.forEach(item => {
+        const span = document.createElement('span');
+        span.textContent = item;
+        marqueeSection.appendChild(span);
+    });
+    const button = dialog.querySelector('#todeployment');
+    if (project.deployment != "") {
+        button.textContent = "View Project!";
+        button.setAttribute("data-url",`${project.deployment}`);
+        button.addEventListener('click', () => {
+            window.open(project.deployment, '_blank');
         });
-        const button = dialog.querySelector('#todeployment');
-        if (project.deployment != "") {
-            button.textContent = "View Project!";
-            button.setAttribute("data-url",`${project.deployment}`);
-            button.addEventListener('click', () => {
-                window.open(project.deployment, '_blank');
-            });
-        } else {
-            button.style.backgroundColor = "var(--background)";
-            button.textContent = "Not yet deployed";
-        }
-        if (project.articleHeader != "") {
-            dialog.querySelector('article h3').textContent = project.articleHeader;
-        } else {
-            dialog.querySelector('article h3').style.display = "none";
-        }
-        const blogBody = dialog.querySelector('article');
-        project.description.forEach(paragraph => {
-            const p = document.createElement('p');
-            p.textContent = paragraph;
-            blogBody.appendChild(p);
-        });
-
-        dialog.showModal();
-        const editButton = document.getElementById("edit");
-        editButton.addEventListener("click", () => {
-            enableEditMode(dialog, card.dataset.coverType, card.dataset.srcs)
-        });
-
-        dialog.querySelector('#close').addEventListener('click', () => {
-            dialog.close();
-        });
-        
-        dialog.addEventListener('close', function() {
-            overlay.remove();
-        });
+    } else {
+        button.style.backgroundColor = "var(--background)";
+        button.textContent = "Not yet deployed";
+    }
+    if (project.articleHeader != "") {
+        dialog.querySelector('article h3').textContent = project.articleHeader;
+    } else {
+        dialog.querySelector('article h3').style.display = "none";
+    }
+    const blogBody = dialog.querySelector('article');
+    project.description.forEach(paragraph => {
+        const p = document.createElement('p');
+        p.textContent = paragraph;
+        blogBody.appendChild(p);
     });
 }
 
+// populating the dialog box
+// attempting the event bubblimg approach
+projectGallery.addEventListener('click', e => {
+    const card = e.target.closest('project-card');
+    if (!card) return; // catch clicks only on project cards
 
+    //grab the project id
+    const project = currentProjects[card.dataset.id];
+    if (!project) return;
 
+    //clone dialog into DOM, then plug in data
+    const template = document.getElementById("project-info");
+    const overlay = template.content.querySelector('dialog-overlay').cloneNode(true);
+    document.body.appendChild(overlay);
+    const dialog = overlay.querySelector('dialog');
+    dialog.setAttribute("data-project-id",card.dataset.id); // assign unique id to dialog
+
+    fillDialogInfo(dialog, project);
+
+    dialog.showModal();
+    const editButton = document.getElementById("edit");
+    editButton.addEventListener("click", () => {
+        enableEditMode(dialog, card.dataset.coverType, card.dataset.srcs)
+    });
+
+    dialog.querySelector('#close').addEventListener('click', () => {
+        dialog.close();
+    });
+    
+    dialog.addEventListener('close', function() {
+        overlay.remove();
+    });
+});
+
+export { fillDialogInfo, fillCard};

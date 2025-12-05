@@ -1,7 +1,8 @@
+import { fillCard, fillDialogInfo } from "./loadProjects.js";  
 // my choice: a local storage-based approach, so that when you load remote you can pull back the original data
     // also a strategic choice since I wrote that data and would like to keep that information on my site
 // TODOs: 
-    // UPDATE: allow the user to edit the dialog popup with a double click
+    // UPDATE: allow the user to edit the dialog popup with a double click (or an edit button)
     // CREATE: allow the user to add a card - make a form that prompts them for the extra data needed pop up
     // DELETE: add a delete button near each card (or do select and delete option) that allows users to delete cards from local
     
@@ -11,6 +12,7 @@ export function enableEditMode(dialogBox, oldCoverType, oldSrcs) {
     console.log(oldCoverType);
     console.log(oldSrcs);
     const summaryContent = dialogBox.querySelector("article");
+    const projectId = dialogBox.dataset.projectId;
 
     // switch inside of dialog to form for editing mode (use CSS to make this look how the dialog currently looks)
     // TODO: show some other indicator (maybe a little css fade-in message to tell user that they're in edit mode)
@@ -103,5 +105,13 @@ export function enableEditMode(dialogBox, oldCoverType, oldSrcs) {
         }else{
             localStorage.setItem(id, JSON.stringify(updatedProj));
         }
+
+        // now change the cardData
+        const updateCard = document.querySelector(`project-card[data-id=${projectId}]`);
+        console.log(updateCard);
+        fillCard(updateCard, JSON.parse(localStorage.getItem(projectId)), projectId)
+        fillDialogInfo(dialogBox, JSON.parse(localStorage.getItem(projectId)));
+        editDialog.replaceWith(dialogBox);
+
     });
 }
