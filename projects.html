@@ -50,12 +50,18 @@
         <button id="local">Load Local</button>
         <button id="remote">Load Remote</button>
       </div>
-      <div id="projects-gallery"></div>
+      <div id="showcase">
+        <projects-gallery>
+        </projects-gallery>
+      </div>
     </main>
-    <template>
+    <template id="project-info">
       <dialog-overlay>
         <dialog closedby="any">
-          <button id="close">x</button>
+          <div>
+            <button id="edit">Edit</button>
+            <button id="close">x</button>
+          </div>
           <section>
             <h2></h2>
             <h3 id="date"></h3> 
@@ -72,6 +78,13 @@
           </article>
         </dialog>
       </dialog-overlay>
+    </template>
+    <template id="editing-buttons">
+      <editing-tools>
+        <button id="create">+</button>
+        <button id="select">select</button>
+        <button id="reset">reset</button>
+      </editing-tools>
     </template>
     <footer>
       <a>ada.he0908@gmail.com</a>

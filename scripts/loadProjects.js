@@ -1,32 +1,17 @@
 import {enableEditMode} from "./editProjects.js";
 
 const url = `https://api.jsonbin.io/v3/b/69314eb743b1c97be9d70dd3`;
+const projectGallery = document.querySelector("projects-gallery");
 
-const projectGallery = document.getElementById("projects-gallery");
-// load from local
+// load in projects from local
 const localButton = document.getElementById("local");
-if (!localStorage.getItem("visited")) {
-    console.log("Projects data is not in local storage: if there is network, JSON data will populate it.");
-    async () => {
-        try {
-            const response = await fetch(url);
-            if (!response.ok) {
-                throw new Error(`Response status: ${response.status}`);
-            }
-            let jsonData = await response.json();
-            let objects = jsonData.record;
-            Object.keys(objects).forEach(key => {
-                console.log(key);
-                localStorage.setItem(key, JSON.stringify(objects[key]));
-            });
-        }catch (error) {
-            console.error(error.message);
-            projectGallery.innerHTML = "No network, and no data to fetch from local storage. Projects cannot be shown.";
-        }
-    }
-    localStorage.setItem("visited", "true");
+if (!localStorage.getItem("loaded")) {
+    loadIntoLocal();
 }
-
+// get editing tools
+const editArea = document.getElementById("showcase");
+const editTemplate = document.getElementById("editing-buttons");
+const editorTools = editTemplate.content.querySelector("editing-tools").cloneNode(true);
 localButton.addEventListener("click", () => {
     // get everything from local storage as an object
     let projectData = {};
@@ -38,8 +23,16 @@ localButton.addEventListener("click", () => {
         const project = localStorage.getItem(key);
         projectData[key] = JSON.parse(project);
     });
+    // add editing tools into card gallery
+    if (!editArea.contains(editorTools)){
+        editArea.appendChild(editorTools);
+    }
     populateCardGallery(projectData);
     populateDialog(projectData);
+});
+const reset = editorTools.querySelector("#reset");
+reset.addEventListener("click", () => {
+    loadIntoLocal();
 });
 
 
@@ -60,6 +53,28 @@ remoteButton.addEventListener("click", async () => {
         console.error(error.message);
     }
 });
+
+async function loadIntoLocal(){
+    try {
+        const response = await fetch(url);
+        if (!response.ok) {
+            throw new Error(`Response status: ${response.status}`);
+        }
+        let jsonData = await response.json();
+        let objects = jsonData.record;
+        Object.keys(objects).forEach(key => {
+            console.log(key);
+            localStorage.setItem(key, JSON.stringify(objects[key]));
+        });
+        if (!localStorage.getItem("visited")){
+            localStorage.setItem("loaded", "true");
+        }
+        return true;
+    }catch (error) {
+        console.error(error.message);
+    }
+    return false;
+}
 
 function populateCardGallery(projects) {
     projectGallery.innerHTML = "";
@@ -91,17 +106,16 @@ function populateDialog(projects) {
         if (!project) return;
 
         //clone dialog into DOM, then plug in data
-        const template = document.querySelector("template");
+        const template = document.getElementById("project-info");
         const overlay = template.content.querySelector('dialog-overlay').cloneNode(true);
         document.body.appendChild(overlay);
 
         const dialog = overlay.querySelector('dialog');
 
-        //set data attributes to track which project and its tags are showing: important for CRUD
+        //set data attributes to track the project, its tags, and its deployment: important for CRUD
         dialog.setAttribute("data-project-id",card.dataset.id);
-        console.log();
         dialog.setAttribute("data-tags",JSON.stringify(project.tags));
-        
+        dialog.querySelector("#todeployment").setAttribute("data-url", project.deployment);
         dialog.querySelector('h2').textContent = project.title;
         dialog.querySelector('h3').textContent = project.date;
         const marqueeSection = dialog.querySelector('#marquee-content');
@@ -136,7 +150,10 @@ function populateDialog(projects) {
         });
 
         dialog.showModal();
-        enableEditMode(dialog);
+        const editButton = document.getElementById("edit");
+        editButton.addEventListener("click", () => {
+            enableEditMode(dialog, card.dataset.coverType, card.dataset.srcs)
+        });
 
         dialog.querySelector('#close').addEventListener('click', () => {
             dialog.close();
@@ -147,4 +164,6 @@ function populateDialog(projects) {
         });
     });
 }
+
+
 
