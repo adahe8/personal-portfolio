@@ -33,7 +33,6 @@ body {
   margin: 0;
   width: 100%;
   padding: var(--spacing-size) 0 var(--footer-height) 0;
-  display: grid;
   row-gap: var(--spacing-size);
   color: var(--font-color);
   background-color: var(--background);
@@ -143,7 +142,7 @@ main img {
   #additional-img {
     display: none;
   }
-  #projects-gallery {
+  projects-gallery {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -165,14 +164,13 @@ main img {
     place-items: center;
     gap: var(--spacing-size);
   }
-  #projects-gallery {
+  projects-gallery {
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
     column-gap: var(--spacing-size);
     row-gap: var(--spacing-size);
     justify-content: center;
-    align-items: center;
   }
 }
 
@@ -218,6 +216,10 @@ svg text {
 }
 
 /** styling title-picture overlays */
+header:has(.image-text-header){
+  padding-bottom: var(--gutter-size);
+  height: fit-content;
+}
 .image-text-header {
   position: relative;
   text-align: center;
@@ -230,29 +232,43 @@ svg text {
   }
   img,
   source {
-    width: 80%;
-    height: auto;
+    height: 20rem;
   }
 }
 
 /** projects page-specific styling */
 #projects-main {
   display: grid;
+  justify-items: center;
   row-gap: var(--spacing-size);
+  margin-top: 0;
+  div {
+    text-align: center;
+    width: 100%;
+  }
 }
-#projects-main div {
-  display: flex;
-  flex-direction: row;
-  column-gap: var(--spacing-size);
-  justify-content: center;
-  width: 100%;
+#showcase {
+  display: grid;
+  justify-items: center;
+  row-gap: var(--spacing-size);
+  padding: 0;
+  margin: 0 var(--spacing-size);
   button {
     border-color: var(--background);
     color: var(--background);
     background-color: var(--accent-1);
     margin: 0;
-    width: 15rem;
+    width: 10rem;
     height: 3rem;
+  }
+}
+editing-tools {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: left;
+  div {
+    margin-left: auto;
   }
 }
 /** custom component styling */
@@ -269,7 +285,6 @@ select-overlay {
   width: fit-content;
   height: fit-content;
   margin: 0;
-  padding: var(--spacing-size);
 }
 select-overlay:has(input[type="checkbox"]:checked) {
   background-color: var(--accent-2);
@@ -277,8 +292,8 @@ select-overlay:has(input[type="checkbox"]:checked) {
 }
 select-overlay input {
   position: absolute;
-  top: calc(var(--spacing-size) + var(--spacing-size));
-  left: calc(var(--spacing-size) + var(--spacing-size));
+  top: var(--spacing-size);
+  left: var(--spacing-size);
   accent-color: var(--accent-2);
   z-index: 1;
 }
@@ -399,9 +414,11 @@ input[type="textarea"] {
 
 input[type="submit"],
 button {
-  margin: auto;
-  height: 2rem;
+  margin-left: auto;
+  margin-right: auto;
+  height: 3rem;
   width: 40%;
+  max-width: var(--home-img-min-width);
   background-color: var(--accent-2);
   font-family: "KoPub Batang", serif;
   font-size: 16px;

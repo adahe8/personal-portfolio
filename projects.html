@@ -45,12 +45,20 @@
       </section>
     </header>
     <main id="projects-main">
-      <noscript> Enable JavaScript to view in depth project descriptions and their deployment statuses! </noscript>
+      <noscript> Enable JavaScript to view my projects!</noscript>
       <div>
         <button id="local">Load Local</button>
         <button id="remote">Load Remote</button>
       </div>
       <div id="showcase">
+        <editing-tools style="display:none;">
+          <button id="create">+</button>
+          <button id="select">select</button>
+          <button id="reset">reset</button>
+          <div id="exit-select" style="display:none;">
+            <button id="exit">x</button>
+          </div>
+        </editing-tools>
         <projects-gallery>
         </projects-gallery>
       </div>
@@ -78,16 +86,6 @@
           </article>
         </dialog>
       </dialog-overlay>
-    </template>
-    <template id="editing-buttons">
-      <editing-tools>
-        <button id="create">+</button>
-        <button id="select">select</button>
-        <button id="reset">reset</button>
-        <div id="exit-select" style="display:none;">
-          <button id="exit">x</button>
-        </div>
-      </editing-tools>
     </template>
     <footer>
       <a>ada.he0908@gmail.com</a>

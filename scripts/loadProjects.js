@@ -13,15 +13,12 @@ if (!localStorage.getItem("loaded")) {
 }
 // get editing tools
 const editArea = document.getElementById("showcase");
-const editTemplate = document.getElementById("editing-buttons");
-const editorTools = editTemplate.content.querySelector("editing-tools").cloneNode(true);
+const editorTools = editArea.querySelector("editing-tools");
 localButton.addEventListener("click", () => {
     // get everything from local storage as an object
     let projectData = getLocalProjects();
     // add editing tools into card gallery
-    if (!editArea.contains(editorTools)){
-        editArea.appendChild(editorTools);
-    }
+    editorTools.removeAttribute("style");
     populateCardGallery(projectData);
 });
 
@@ -91,6 +88,7 @@ exitBtn.addEventListener("click", () => {
 // load from remote
 const remoteButton = document.getElementById("remote");
 remoteButton.addEventListener("click", async () => {
+    editorTools.setAttribute("style", "display: none;");
     try {
         const response = await fetch(url);
         if (!response.ok) {

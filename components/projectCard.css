@@ -50,6 +50,9 @@ subject-tag {
 .ai {
   background-color: var(--end-blue);
 }
+.backend {
+  background-color: var(--accent-2);
+}
 
 /** fallbacks if browser doesn't support color - trying out 2 of my fave colors in hsl */
 .frontend {
