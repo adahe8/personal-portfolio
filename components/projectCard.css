@@ -9,6 +9,9 @@ a, h3 {
 a h3 {
   padding: 0;
 }
+a:visited {
+  color: var(--font-color);
+}
 
 .projectdisplay {
   position: relative;

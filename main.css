@@ -77,7 +77,6 @@ nav {
   height: 2.5rem;
   border-radius: var(--corner-rounding);
   border-bottom-left-radius: 0;
-  background-color: var(--background);
   a {
     align-content: center;
     height: 100%;
@@ -88,10 +87,15 @@ nav {
   a:hover {
     background-color: var(--accent-2);
   }
-}
-a:link,
-a:visited {
-  color: var(--font-color);
+  a:link,
+  a:visited {
+    text-decoration: none;
+    color: var(--font-color);
+  }
+  a[data-current] {
+    background-color: var(--accent-2);
+    text-decoration: line-through;
+  }
 }
 
 nav > img {
@@ -102,10 +106,6 @@ nav > img {
   transform: translateX(-50%);
 }
 
-a[data-current] {
-  background-color: var(--accent-2);
-  text-decoration: line-through;
-}
 main img {
   min-width: var(--home-img-min-width);
   max-width: var(--home-img-max-width);
@@ -122,6 +122,21 @@ main img {
     height: auto;
     width: 100%;
   }
+}
+/** button animations */
+button:enabled {
+  cursor: pointer;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+button:enabled:hover {
+  background-color: var(--end-blue);
+  transform: translateY(var(--lift-up));
+  box-shadow: 0 var(--form-rounding) var(--form-rounding) rgba(0, 0, 0, 0.3);
+}
+button:disabled {
+  background-color: var(--background);
+  color: var(--font-color);
+  cursor: not-allowed;
 }
 
 /** media queries for smaller screen sizes */
@@ -168,8 +183,8 @@ main img {
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
-    column-gap: var(--spacing-size);
-    row-gap: var(--spacing-size);
+    column-gap: var(--gutter-size);
+    row-gap: var(--gutter-size);
     justify-content: center;
   }
 }
@@ -242,15 +257,16 @@ header:has(.image-text-header){
   justify-items: center;
   row-gap: var(--spacing-size);
   margin-top: 0;
-  div {
-    text-align: center;
-    width: 100%;
-  }
+}
+#projects-main > div {
+  text-align: center;
+  width: 100%;
 }
 #showcase {
+  width: fit-content;
   display: grid;
   justify-items: center;
-  row-gap: var(--spacing-size);
+  row-gap: var(--gutter-size);
   padding: 0;
   margin: 0 var(--spacing-size);
   button {
@@ -258,18 +274,27 @@ header:has(.image-text-header){
     color: var(--background);
     background-color: var(--accent-1);
     margin: 0;
-    width: 10rem;
+    width: 6rem;
     height: 3rem;
+  }
+  button:disabled {
+    background-color: gray;
+    opacity: 0.8;
   }
 }
 editing-tools {
-  width: 100%;
+  width: 80%;
   display: flex;
   flex-direction: row;
+  column-gap: var(--spacing-size);
   justify-content: left;
-  div {
-    margin-left: auto;
-  }
+  margin-left: 15vw;
+  margin-right: 15vw;
+}
+#exit-select {
+  width: fit-content;
+  margin-left: auto;
+  margin-right: 0;
 }
 /** custom component styling */
 project-card {
@@ -279,7 +304,12 @@ project-card {
   justify-content: space-between;
   aspect-ratio: var(--card-ratio);
   width: var(--project-card-width);
+  transition: transform 0.3s ease;
 }
+project-card:hover {
+  transform: scale(1.2);
+}
+
 select-overlay {
   position: relative;
   width: fit-content;
@@ -337,18 +367,17 @@ dialog {
     width: 100%;
     display: flex;
     flex-direction: row;
-    align-items: baseline;
     justify-content: space-between;
-  }
-  button {
-    margin: 0;
-    width:fit-content;
   }
 }
 dialog > div > button {
+  width:fit-content;
   margin: var(--spacing-size);
   margin-bottom: 0;
   padding: var(--tag-padding) var(--spacing-size);
+}
+.close{
+  margin-left: auto;
 }
 dialog article {
   padding: 0 var(--spacing-size) var(--spacing-size) var(--spacing-size);
@@ -390,22 +419,23 @@ marquee-container {
 
 /* form styling */
 form {
-  margin: 2rem;
   display: flex;
   flex-direction: column;
   row-gap: 1rem;
-  background: linear-gradient(
-    180deg,
-    var(--end-blue) 0%,
-    var(--end-peach) 100%
-  );
-  padding: 1rem;
+  padding: var(--spacing-size);
   border: 1px solid black;
   border-radius: var(--form-rounding);
+  input, textarea, select {
+    font-family: inherit;
+    font-size: inherit;
+  }
+  fieldset {
+    display: grid;
+  }
 }
-
-form-field {
-  display: grid;
+#tools {
+  padding: var(--spacing-size) 0;
+  flex: 1;
 }
 
 input[type="textarea"] {

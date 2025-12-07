@@ -187,6 +187,7 @@ function fillDialogInfo(dialog, project){
             window.open(project.deployment, '_blank');
         });
     } else {
+        button.disabled = true;
         button.style.backgroundColor = "var(--background)";
         button.textContent = "Not yet deployed";
     }

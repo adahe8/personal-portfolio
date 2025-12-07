@@ -99,7 +99,9 @@ function createNewProject(){
     const overlay = document.createElement("dialog-overlay");
     overlay.appendChild(createDialog);
     createDialog.innerHTML = `
-        <button class="close">x</button>
+        <div>
+            <button class="close">x</button>
+        </div>
         <form id="create-project">${buildProjectForm()}</form>
     `;
     document.body.append(overlay);
@@ -216,6 +218,8 @@ function enableEditMode(dialogBox, oldCoverType, oldSrcs) {
 function toggleSelectMode(selectMode, selectBtn, deleteBtn){
     selectMode = !selectMode;
     const exitSelectDiv = document.getElementById("exit-select");
+    const createBtn = document.getElementById("create");
+    const resetBtn = document.getElementById("reset");
     if (selectMode) {
         document.querySelectorAll("project-card").forEach(card => {
             // check if card is already wrapped
@@ -230,6 +234,8 @@ function toggleSelectMode(selectMode, selectBtn, deleteBtn){
         });
         selectBtn.replaceWith(deleteBtn);
         exitSelectDiv.setAttribute("style","display:block;");
+        createBtn.disabled = true;
+        resetBtn.disabled = true;
     } else {
         // reversal function
         document.querySelectorAll("select-overlay").forEach(overlay => {
@@ -238,6 +244,8 @@ function toggleSelectMode(selectMode, selectBtn, deleteBtn){
         });
         deleteBtn.replaceWith(selectBtn);
         exitSelectDiv.setAttribute("style","display:none;");
+        createBtn.disabled = false;
+        resetBtn.disabled = false;
     }
     let cards = document.querySelectorAll("select-overlay");
     cards.forEach(card => {
