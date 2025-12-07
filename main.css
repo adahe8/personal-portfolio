@@ -446,7 +446,6 @@ form {
   flex-direction: column;
   row-gap: 1rem;
   padding: var(--spacing-size);
-  border: 1px solid black;
   border-radius: var(--form-rounding);
   input, textarea, select {
     font-family: inherit;
