@@ -1,5 +1,5 @@
 import {inferCoverType, createNewProject, enableEditMode, toggleSelectMode, deleteProjects } from "./editProjects.js";
-let projectcount = localStorage.getItem("projectcount") ? localStorage.getItem("projectcount") : localStorage.length-1; //global scope var for assigning ids during create
+let projectcount = localStorage.getItem("projectcount") ? localStorage.getItem("projectcount") : localStorage.length-2; //global scope var for assigning ids during create
 localStorage.setItem("projectcount", projectcount);
 
 const url = `https://api.jsonbin.io/v3/b/69314eb743b1c97be9d70dd3`;
@@ -23,16 +23,19 @@ localButton.addEventListener("click", () => {
 });
 
 const reset = editorTools.querySelector("#reset");
-reset.addEventListener("click", () => {
+reset.addEventListener("click", async () => {
     Object.keys(localStorage).forEach(key => {
-        if (key === "theme" || key === "visited" || key === "projectcount"){
+        if (key === "theme" || key === "loaded" || key === "projectcount"){
             return;
         }
         localStorage.removeItem(key);
         projectcount -= 1;
     });
     localStorage.setItem("projectcount", projectcount);
-    loadIntoLocal();
+    const loaded = await loadIntoLocal();
+    if (loaded) {
+        populateCardGallery(getLocalProjects());
+    }
 });
 const createBtn = editorTools.querySelector("#create");
 createBtn.addEventListener("click", () => {
@@ -104,7 +107,7 @@ remoteButton.addEventListener("click", async () => {
 function getLocalProjects(){
     let projectData = {};
     Object.keys(localStorage).forEach(key => {
-        if (key === "theme" || key === "visited" || key === "projectcount"){
+        if (key === "theme" || key === "loaded" || key === "projectcount"){
             return;
         }
         projectcount++;
