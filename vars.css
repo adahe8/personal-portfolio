@@ -10,6 +10,7 @@
   --corner-rounding: 1.25rem;
   --form-rounding: 8px;
   --lift-up: -5px;
+  --drop-shadow: 0 5px var(--form-rounding) rgba(0, 0, 0, 0.3);
 
   --footer-height: 4.5rem;
   --max-subheading-width: 40rem;
