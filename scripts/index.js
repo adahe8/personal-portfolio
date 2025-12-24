@@ -4,6 +4,8 @@ const label = document.getElementById("theme-label");
 updateIconsAndButtons();
 btn.style.display = "block";
 
+label.textContent = prefersDarkScheme == "dark" ? "to Light Theme" : "to Dark Theme";
+
 const defaultTheme = localStorage.getItem("theme");
 if (defaultTheme == "dark") {
   document.body.classList.toggle("dark-theme");

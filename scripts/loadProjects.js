@@ -7,20 +7,17 @@ const projectGallery = document.querySelector("projects-gallery");
 let currentProjects = {};
 
 // load in projects from local
-const localButton = document.getElementById("local");
 if (!localStorage.getItem("loaded")) {
     loadIntoLocal();
 }
 // get editing tools
 const editArea = document.getElementById("showcase");
 const editorTools = editArea.querySelector("editing-tools");
-localButton.addEventListener("click", () => {
-    // get everything from local storage as an object
-    let projectData = getLocalProjects();
-    // add editing tools into card gallery
-    editorTools.removeAttribute("style");
-    populateCardGallery(projectData);
-});
+// get everything from local storage as an object
+let projectData = getLocalProjects();
+// add editing tools into card gallery
+editorTools.removeAttribute("style");
+populateCardGallery(projectData);
 
 const reset = editorTools.querySelector("#reset");
 reset.addEventListener("click", async () => {
@@ -86,22 +83,6 @@ if (deleteBtn) {
 const exitBtn = editorTools.querySelector("#exit");
 exitBtn.addEventListener("click", () => {
     selectMode = toggleSelectMode(selectMode, selectBtn, deleteBtn);
-});
-
-// load from remote
-const remoteButton = document.getElementById("remote");
-remoteButton.addEventListener("click", async () => {
-    editorTools.setAttribute("style", "display: none;");
-    try {
-        const response = await fetch(url);
-        if (!response.ok) {
-            throw new Error(`Response status: ${response.status}`);
-        }
-        const jsonData = await response.json();
-        populateCardGallery(jsonData.record);
-    } catch (error) {
-        console.error(error.message);
-    }
 });
 
 function getLocalProjects(){
