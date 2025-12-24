@@ -1,3 +1,3 @@
-# HW3
+# Ada's Portfolio
 
-Cloned my homework 2 repository and set up a new repository to track changes for hw3. I had to set up mirroring so that I could duplicate the repository and make changes in a new repository for this assignment.
+Started October 2025: my personal website, created with no frameworks to explore how much I can accomplish with baseline tools!
