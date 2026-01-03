@@ -392,6 +392,10 @@ dialog {
     flex-direction: row;
     justify-content: space-between;
   }
+  figure {
+    margin: var(--spacing-size);
+    text-align: center;
+  }
 }
 dialog > div > button {
   width:fit-content;

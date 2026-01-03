@@ -186,6 +186,15 @@ function fillDialogInfo(dialog, project){
         p.textContent = paragraph;
         blogBody.appendChild(p);
     });
+    if (project.supplementary != null) {
+        if (project.supplementary.type == "image") {
+            const fig = document.createElement("figure");
+            fig.innerHTML = `<img src=${project.supplementary.src}
+                alt=${project.supplementary.alt} />
+                <figcaption>${project.supplementary.caption}</figcaption>`;
+            blogBody.appendChild(fig)
+        }
+    }
 }
 
 // populating the dialog box
